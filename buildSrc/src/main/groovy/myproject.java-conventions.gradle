@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'checkstyle'
+    id 'com.github.spotbugs'
+    id 'java-gradle-plugin'
+}
+
+repositories {
+    mavenCentral()
+}
+
+checkstyle {
+    config = resources.text.fromString(com.example.CheckstyleUtil.getCheckstyleConfig('/checkstyle.xml'))
+    maxWarnings = 0
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-Xlint:deprecation'
+}

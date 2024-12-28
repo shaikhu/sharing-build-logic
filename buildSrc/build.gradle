@@ -1,0 +1,34 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation('com.github.spotbugs.snom:spotbugs-gradle-plugin:5.2.1')
+    testImplementation platform("org.spockframework:spock-bom:2.2-groovy-3.0")
+    testImplementation('org.spockframework:spock-core')
+}
+
+
+sourceSets {
+    functionalTest {}
+}
+
+configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
+configurations.functionalTestRuntimeOnly.extendsFrom(configurations.testRuntimeOnly)
+
+tasks.register('functionalTest', Test) {
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.named('check') {
+    dependsOn(tasks.functionalTest)
+}

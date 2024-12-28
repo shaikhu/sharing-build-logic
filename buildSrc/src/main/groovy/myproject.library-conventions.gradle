@@ -1,0 +1,30 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'myproject.java-conventions'
+}
+
+group = 'com.example'
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'myOrgPrivateRepo'
+            url = 'build/my-repo'
+        }
+    }
+}
+
+def readmeCheck = tasks.register('readmeCheck', com.example.ReadmeVerificationTask) {
+    readme = layout.projectDirectory.file('readme.md')
+    readmePatterns = ['^## API$', '^## Changelog$']
+}
+
+tasks.named('check') {
+    dependsOn(readmeCheck)
+}
